@@ -1,26 +1,279 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Billy's Button Clicking Simulator</title><link rel="manifest" href="./manifest.json">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Billy's Button Clicking Simulator</title>
+<link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#00ff88">
+
 <style>
-*{box-sizing:border-box}body{margin:0;padding:16px;font-family:system-ui,Arial;background:#11162b;color:#f7f8ff}main{max-width:650px;margin:auto}h1{text-align:center;font-size:1.8rem}.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}.box,.panel{background:#202844;border:1px solid #455273;border-radius:14px;padding:12px;margin:10px 0}.label{opacity:.75;font-size:.85rem}.num{font-size:1.4rem;font-weight:800}button{border:0;border-radius:12px;padding:13px;font-size:1rem;font-weight:800;touch-action:manipulation}.clickarea{text-align:center;padding:18px}#click{width:230px;height:230px;max-width:70vw;max-height:70vw;border-radius:50%;background:linear-gradient(135deg,#9bf2ff,#24b9df);border:8px solid #c4f8ff;color:#061727;font-size:1.5rem;box-shadow:0 8px #087c9b}.action{width:100%;margin-top:8px;background:#3b4c78;color:white}.red{background:#e72d52}.nuclear{background:#8df078;color:#09220b}.upgrade{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid #455273;padding:10px 0}.upgrade:last-child{border:0}.upgrade button{padding:9px;background:#9bf2ff;color:#081321}.upgrade button:disabled,.action:disabled{opacity:.45}.small{font-size:.85rem;opacity:.8;line-height:1.45}#msg{text-align:center;min-height:1.5em;color:#ffdb76;font-weight:bold} </style></head>
-<body><main><h1>🔘 Button Clicking Simulator</h1><p style="text-align:center">Click • Rebirth • Prestige • Go NUCLEAR ☢️</p>
-<div class="stats"><div class="box"><div class="label">Clicks</div><div class="num" id="clicks">0</div></div><div class="box"><div class="label">Rebirths</div><div class="num" id="rebirths">0</div></div><div class="box"><div class="label">Prestige Points</div><div class="num" id="prestige">0</div></div><div class="box"><div class="label">Click Power</div><div class="num" id="power">1×</div></div></div>
-<div class="clickarea"><button id="click">CLICK ME!</button></div>
-<section class="panel"><h2>🔄 Rebirth</h2><p class="small">Costs <b id="cost">100</b> clicks. Resets clicks and boosts your click power.</p><button class="action" id="rebirth">Rebirth</button></section>
-<section class="panel"><h2>🔴 Red Button — Prestige</h2><p class="small">Requires 5 rebirths and 1,000 clicks. Resets clicks and rebirths and gives 1 Prestige Point.</p><button class="action red" id="prestigeBtn">Locked — need 5 rebirths + 1,000 clicks</button></section>
-<section class="panel"><h2>⭐ Prestige Upgrade Tree</h2>
-<div class="upgrade"><div><b>Click Boost</b><div class="small">1 point · permanently +2 click power</div></div><button id="u1">Buy (1)</button></div>
-<div class="upgrade"><div><b>Rebirth Discount</b><div class="small">2 points · rebirth costs 25% less</div></div><button id="u2">Buy (2)</button></div>
-<div class="upgrade"><div><b>Starter Boost</b><div class="small">5 points · start runs with 5 bonus rebirths</div></div><button id="u3">Buy (5)</button></div></section>
-<section class="panel"><h2>☢️ Nuclear Button</h2><p class="small">Unlock after 100 prestiges. Activate for a 1,000× click multiplier for the current run.</p><button class="action nuclear" id="nuke">Locked — 0/100 prestiges</button></section>
-<div id="msg"></div><button class="action" id="save">💾 Save game</button><button class="action" id="reset">🗑️ Reset game</button><p class="small">Progress autosaves in this browser when supported. Prototype v1 — more upgrades and features can be added!</p></main>
+*{box-sizing:border-box}
+body{margin:0;padding:16px;font-family:system-ui,Arial;background:#11162b;color:#f7f8ff}
+main{max-width:650px;margin:auto}
+h1{text-align:center;font-size:1.8rem}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.box,.panel{background:#202844;border:1px solid #455273;border-radius:14px;padding:12px;margin:10px 0}
+.label{opacity:.75;font-size:.85rem}
+.num{font-size:1.4rem;font-weight:800}
+button{border:0;border-radius:12px;padding:13px;font-size:1rem;font-weight:800;touch-action:manipulation}
+.clickarea{text-align:center;padding:18px}
+#click{width:230px;height:230px;max-width:70vw;max-height:70vw;border-radius:50%;background:linear-gradient(135deg,#9bf2ff,#24b9df);border:8px solid #c4f8ff;color:#061727;font-size:1.5rem;box-shadow:0 8px #087c9b}
+.action{width:100%;margin-top:8px;background:#3b4c78;color:white}
+.red{background:#e72d52}
+.nuclear{background:#8df078;color:#09220b}
+.upgrade{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid #455273;padding:10px 0}
+.upgrade:last-child{border:0}
+.upgrade button{padding:9px;background:#9bf2ff;color:#081321}
+.upgrade button:disabled,.action:disabled{opacity:.45}
+.small{font-size:.85rem;opacity:.8;line-height:1.45}
+#msg{text-align:center;min-height:1.5em;color:#ffdb76;font-weight:bold}
+</style>
+</head>
+
+<body>
+<main>
+<h1>🔘 Button Clicking Simulator</h1>
+<p style="text-align:center">Click • Rebirth • Prestige • Go NUCLEAR ☢️</p>
+
+<div class="stats">
+<div class="box"><div class="label">Clicks</div><div class="num" id="clicks">0</div></div>
+<div class="box"><div class="label">Rebirths</div><div class="num" id="rebirths">0</div></div>
+<div class="box"><div class="label">Prestige Points</div><div class="num" id="prestige">0</div></div>
+<div class="box"><div class="label">Click Power</div><div class="num" id="power">1×</div></div>
+</div>
+
+<div class="clickarea">
+<button id="click">CLICK ME!</button>
+</div>
+
+<section class="panel">
+<h2>🔄 Rebirth</h2>
+<p class="small">Rebirth costs clicks and increases your click power.</p>
+<p class="small">Cost: <b id="cost">100</b> clicks.</p>
+<button class="action" id="rebirth">Rebirth</button>
+</section>
+
+<section class="panel">
+<h2>🔴 Red Button — Prestige</h2>
+<p class="small">
+Requires at least 10 rebirths and 2,000 clicks.
+You receive 2 Prestige Points at 10 rebirths, then
+1 extra point for every 5 additional rebirths:
+15 = 3 points, 20 = 4, 25 = 5, and so on.
+Prestiging resets your clicks and rebirths.
+</p>
+<button class="action red" id="prestigeBtn">Locked — need 10 rebirths + 2,000 clicks</button>
+</section>
+
+<section class="panel">
+<h2>⭐ Prestige Upgrade Tree</h2>
+
+<div class="upgrade">
+<div><b>Click Boost</b><div class="small">1 point · +2 click power</div></div>
+<button id="u1">Buy (1)</button>
+</div>
+
+<div class="upgrade">
+<div><b>Rebirth Discount</b><div class="small">2 points · rebirth costs 25% less</div></div>
+<button id="u2">Buy (2)</button>
+</div>
+
+<div class="upgrade">
+<div><b>Starter Boost</b><div class="small">5 points · gain 5 bonus rebirths at the start of a run</div></div>
+<button id="u3">Buy (5)</button>
+</div>
+</section>
+
+<section class="panel">
+<h2>☢️ Nuclear Button</h2>
+<p class="small">Unlock at 100 Prestige Points. Activate for 1,000× click power during your current run.</p>
+<button class="action nuclear" id="nuke">Locked — 0/100 prestige points</button>
+</section>
+
+<div id="msg"></div>
+<button class="action" id="save">💾 Save game</button>
+<button class="action" id="reset">🗑️ Reset game</button>
+<p class="small">Progress autosaves in this browser when supported.</p>
+</main>
+
 <script>
-(()=>{const fresh=()=>({clicks:0,rebirths:0,prestige:0,basePower:1,nuclear:false,upgrades:{click:false,discount:false,starter:false}});let s=fresh();const $=x=>document.getElementById(x),fmt=n=>Math.floor(n).toLocaleString();function cost(){return Math.max(25,Math.floor(100*Math.pow(1.5,s.rebirths)*(s.upgrades.discount?.75:1)))}function power(){return(s.basePower+(s.upgrades.click?2:0))*(s.nuclear?1000:1)*(1+s.rebirths)}function message(t){$('msg').textContent=t}function save(show=false){try{localStorage.setItem('billyButtonSim',JSON.stringify(s));if(show)message('Saved on this device! 💚')}catch(e){if(show)message('Saving unavailable here; keep this tab open.')}}function render(){$('clicks').textContent=fmt(s.clicks);$('rebirths').textContent=fmt(s.rebirths);$('prestige').textContent=fmt(s.prestige);$('power').textContent=fmt(power())+'×';$('cost').textContent=fmt(cost());$('rebirth').disabled=s.clicks<cost();$('prestigeBtn').disabled=s.rebirths<5||s.clicks<1000;$('prestigeBtn').textContent=s.rebirths>=5&&s.clicks>=1000?'🔴 PRESS RED BUTTON (+1 POINT)':'Locked — need 5 rebirths + 1,000 clicks';[['u1',1,'click','Buy (1)'],['u2',2,'discount','Buy (2)'],['u3',5,'starter','Buy (5)']].forEach(([id,price,key,label])=>{$(id).disabled=s.prestige<price||s.upgrades[key];$(id).textContent=s.upgrades[key]?'Owned':label});$('nuke').disabled=s.prestige<100||s.nuclear;$('nuke').textContent=s.nuclear?'☢️ NUCLEAR ACTIVE — 1,000×':`Locked — ${s.prestige}/100 prestiges`}try{let old=JSON.parse(localStorage.getItem('billyButtonSim')||'null');if(old&&typeof old.clicks==='number'&&old.upgrades)s={...fresh(),...old,upgrades:{...fresh().upgrades,...old.upgrades}}}catch(e){}$('click').onclick=()=>{s.clicks+=power();render();save()};$('rebirth').onclick=()=>{if(s.clicks<cost())return;s.clicks=0;s.rebirths++;if(s.upgrades.starter&&s.rebirths===1)s.rebirths+=5;message('REBIRTH! Your power grew! 🔄');render();save()};$('prestigeBtn').onclick=()=>{if(s.rebirths<5||s.clicks<1000)return;s.clicks=0;s.rebirths=0;s.prestige++;s.nuclear=false;message('PRESTIGE! +1 point! ⭐');render();save()};[['u1',1,'click','Click Boost purchased!'],['u2',2,'discount','Rebirth Discount purchased!'],['u3',5,'starter','Starter Boost purchased!']].forEach(([id,price,key,msg])=>$(id).onclick=()=>{if(s.prestige<price||s.upgrades[key])return;s.prestige-=price;s.upgrades[key]=true;message(msg);render();save()});$('nuke').onclick=()=>{if(s.prestige<100||s.nuclear)return;s.nuclear=true;message('NUCLEAR POWER ACTIVATED — 1,000× CLICKS! ☢️');render();save()};$('save').onclick=()=>save(true);$('reset').onclick=()=>{if(confirm('Reset all progress? This cannot be undone.')){s=fresh();save();message('Fresh start!');render()}};render()})();
-</script><<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js");
-  });
+(()=>{
+const fresh=()=>({
+ clicks:0,
+ rebirths:0,
+ prestige:0,
+ basePower:1,
+ nuclear:false,
+ upgrades:{click:false,discount:false,starter:false}
+});
+
+let s=fresh();
+const $=id=>document.getElementById(id);
+const fmt=n=>Math.floor(n).toLocaleString();
+
+function cost(){
+ return Math.max(
+  25,
+  Math.floor(100*Math.pow(1.5,s.rebirths)*
+  (s.upgrades.discount?0.75:1))
+ );
 }
-</script>/body></html>
+
+function power(){
+ return (s.basePower+(s.upgrades.click?2:0))*
+ (s.nuclear?1000:1)*(1+s.rebirths);
+}
+
+function message(text){
+ $('msg').textContent=text;
+}
+
+function save(show=false){
+ try{
+  localStorage.setItem('billyButtonSim',JSON.stringify(s));
+  if(show)message('Saved on this device! 💚');
+ }catch(e){
+  if(show)message('Saving unavailable in this browser.');
+ }
+}
+
+function render(){
+ $('clicks').textContent=fmt(s.clicks);
+ $('rebirths').textContent=fmt(s.rebirths);
+ $('prestige').textContent=fmt(s.prestige);
+ $('power').textContent=fmt(power())+'×';
+ $('cost').textContent=fmt(cost());
+
+ $('rebirth').disabled=s.clicks<cost();
+
+ // Prestige reward: 10 rebirths = 2 points,
+ // 15 = 3, 20 = 4, 25 = 5, and so on.
+ const reward=Math.floor(s.rebirths/5);
+
+ $('prestigeBtn').disabled=
+  s.rebirths<10 || s.clicks<2000;
+
+ $('prestigeBtn').textContent=
+  s.rebirths>=10 && s.clicks>=2000
+  ? `🔴 PRESS RED BUTTON (+${reward} POINTS)`
+  : 'Locked — need 10 rebirths + 2,000 clicks';
+
+ const upgrades=[
+  ['u1',1,'click','Buy (1)'],
+  ['u2',2,'discount','Buy (2)'],
+  ['u3',5,'starter','Buy (5)']
+ ];
+
+ upgrades.forEach(([id,price,key,label])=>{
+  $(id).disabled=s.prestige<price||s.upgrades[key];
+  $(id).textContent=s.upgrades[key]?'Owned':label;
+ });
+
+ $('nuke').disabled=s.prestige<100||s.nuclear;
+ $('nuke').textContent=s.nuclear
+  ? '☢️ NUCLEAR ACTIVE — 1,000×'
+  : `Locked — ${s.prestige}/100 prestige points`;
+}
+
+// Load saved progress
+try{
+ const old=JSON.parse(localStorage.getItem('billyButtonSim')||'null');
+ if(old && typeof old.clicks==='number' && old.upgrades){
+  s={
+   ...fresh(),
+   ...old,
+   upgrades:{...fresh().upgrades,...old.upgrades}
+  };
+ }
+}catch(e){}
+
+// Clicking
+$('click').onclick=()=>{
+ s.clicks+=power();
+ render();
+ save();
+};
+
+// Rebirth
+$('rebirth').onclick=()=>{
+ if(s.clicks<cost())return;
+
+ s.clicks=0;
+ s.rebirths++;
+
+ if(s.upgrades.starter && s.rebirths===1){
+  s.rebirths+=5;
+ }
+
+ message('REBIRTH! Your power grew! 🔄');
+ render();
+ save();
+};
+
+// Prestige
+$('prestigeBtn').onclick=()=>{
+ if(s.rebirths<10 || s.clicks<2000)return;
+
+ const reward=Math.floor(s.rebirths/5);
+
+ s.clicks=0;
+ s.rebirths=0;
+ s.prestige+=reward;
+ s.nuclear=false;
+
+ message(`PRESTIGE! You gained ${reward} points! ⭐`);
+ render();
+ save();
+};
+
+// Prestige upgrades
+[
+ ['u1',1,'click','Click Boost purchased!'],
+ ['u2',2,'discount','Rebirth Discount purchased!'],
+ ['u3',5,'starter','Starter Boost purchased!']
+].forEach(([id,price,key,msg])=>{
+ $(id).onclick=()=>{
+  if(s.prestige<price||s.upgrades[key])return;
+
+  s.prestige-=price;
+  s.upgrades[key]=true;
+
+  message(msg);
+  render();
+  save();
+ };
+});
+
+// Nuclear button
+$('nuke').onclick=()=>{
+ if(s.prestige<100||s.nuclear)return;
+
+ s.nuclear=true;
+ message('NUCLEAR POWER ACTIVATED — 1,000× CLICKS! ☢️');
+ render();
+ save();
+};
+
+$('save').onclick=()=>save(true);
+
+$('reset').onclick=()=>{
+ if(confirm('Reset all progress? This cannot be undone.')){
+  s=fresh();
+  save();
+  message('Fresh start!');
+  render();
+ }
+};
+
+render();
+})();
+
+if('serviceWorker' in navigator){
+ window.addEventListener('load',()=>{
+  navigator.serviceWorker.register('./sw.js');
+ });
+}
+</script>
+</body>
+</html>
